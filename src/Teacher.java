@@ -1,5 +1,7 @@
+import java.util.Scanner;
+
 public class Teacher extends Person {
-    static String subject;
+    String subject;
 
     public Teacher(String name, String password, String subject){
         super(name, password);
@@ -18,8 +20,5 @@ public class Teacher extends Person {
         System.out.printf("You are %s and you are a teacher!", name);
     }
 
-    public void addGradeToStudent(Student student, double grade){
-        student.addGrade(grade);
-        System.out.println("Grade added successfully!");
-    }
+
 }

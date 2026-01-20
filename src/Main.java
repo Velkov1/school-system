@@ -80,6 +80,14 @@ class Main{
         }
         return null;
     }
+
+    public static Person getUser(String username, Map<String, Person> map){
+        if(map.containsKey(username)){
+            Person person = map.get(username);
+            return person;
+        }
+        return null;
+    }
     public static void main(String[] args){
 
         Scanner input = new Scanner(System.in);
@@ -137,15 +145,15 @@ class Main{
         switch(role){
             case "teacher":
                 Teacher teacher = (Teacher) person;
-                teacherActions(teacher);
+                teacherActions(input, teacher, students);
                 break;
             case "student":
                 Student student = (Student) person;
-                studentActions(student);
+                studentActions(input, student);
                 break;
             case "principal":
                 Principal prin = (Principal) person;
-                principalActions(prin);
+                principalActions(input, prin);
                 break;
             default:
                 System.out.println("There is an error. Try again later.");
@@ -153,16 +161,233 @@ class Main{
     }
 
 
-    public static void teacherActions(Teacher teacher){
+    public static void teacherActions(Scanner input, Teacher teacher, Map<String, Person> students){
+        int action = 0;
+        while(input.hasNextLine()){
+            System.out.println("What do you want to do today?\nEnter a number from: ");
+            System.out.println("1. Add grade.");
+            System.out.println("2.Remove grade.");
+            System.out.println("3. Open the gpa of the school.");
+            System.out.println("4. Change password.");
+            if(input.hasNextInt()){
+                action = input.nextInt();
+                if(action < 1 || action > 4){
+                    System.out.println("Please enter a valid action.");
+
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                System.out.println("Please enter the number of wanted action.");
+            }
+        }
+        switch(action){
+            case 1:
+                addGradeToStudent(input, teacher, students);
+                break;
+            case 2:
+                removeGradeToStudent(input, teacher, students);
+                break;
+            case 3:
+                openGpa(input, students);
+                break;
+            case 4:
+                changePassword(input, teacher);
+
+            default:
+                break;
+
+        }
 
     }
 
-    public static void studentActions(Student student){
+    public static void studentActions(Scanner input, Student student){
 
     }
 
-    public static void principalActions(Principal principal){
+    public static void principalActions(Scanner input, Principal principal){
 
+    }
+
+
+
+    public static void addGradeToStudent(Scanner input, Teacher teacher, Map<String, Person> students){
+        String name = "";
+        while(true){
+            name  = input.nextLine();
+            System.out.println("Enter a student's name:");
+            if(students.containsKey(name)){
+                break;
+            }
+            else{
+                System.out.println("Please enter a valid student's name.");
+            }
+        }
+        String subject = "";
+        while(true){
+            System.out.println("Enter the subject you want to add the note(only in the subject that you teach!): ");
+            if(input.hasNextLine()){
+                subject = input.nextLine();
+                if(subject.equals(teacher.subject)){
+                    break;
+                }
+                else{
+                    System.out.println("Please enter your subject: ");
+                }
+            }
+        }
+        double grade = 0.0;
+        while(true){
+            System.out.printf("Enter the %s's grade: ", name);
+            if(input.hasNextDouble()){
+                grade = input.nextDouble();
+                if(grade < 1.0 || grade > 6.0){
+                    System.out.println("Please enter a valid grade(1 - 6).");
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                System.out.println("Please enter a number for the grade(1-6): ");
+            }
+
+        }
+
+        Student currentStudent = (Student) getUser(name, students);
+        if(currentStudent == null){
+            System.out.println("Student not found");
+            return;
+        }
+        currentStudent.addGrade(grade, subject);
+
+    }
+
+    public static void removeGradeToStudent(Scanner input, Teacher teacher, Map<String, Person> students){
+        String name = "";
+        while(true){
+            System.out.println("Enter a student's name:");
+            name  = input.nextLine();
+            if(students.containsKey(name)){
+                break;
+            }
+            else{
+                System.out.println("Please enter a valid student's name.");
+            }
+        }
+        Student currentStudent = (Student) getUser(name, students);
+        if(currentStudent == null){
+            System.out.println("Student not found");
+            return;
+        }
+        String subject = "";
+        while(true){
+            System.out.println("Enter the subject you want to remove the note(only in the subject that you teach and the students has this subject!): ");
+            if(input.hasNextLine()){
+                subject = input.nextLine();
+                if(subject.equals(teacher.subject)){
+                    if(currentStudent.hasSubject(subject)){
+                        break;
+                    }
+                    else{
+                        System.out.println("This student does not have this subject. Try again.");
+                    }
+
+                }
+                else{
+                    System.out.println("Please enter your subject: ");
+                }
+            }
+        }
+
+        double grade = 0.0;
+        while(true){
+            System.out.printf("Enter the %s's grade: ", name);
+            if(input.hasNextDouble()){
+                grade = input.nextDouble();
+                if(grade < 1.0 || grade > 6.0){
+                    System.out.println("Please enter a valid grade(1 - 6).");
+                }
+                else{
+                    if(currentStudent.hasGrade(subject, grade)){
+                        currentStudent.removeGrade(grade, subject);
+                        break;
+                    }
+                    else{
+                        System.out.println("The student does not have such grade in this subject. Enter a correct grade");
+                    }
+
+                }
+            }
+            else{
+                System.out.println("Please enter a number for the grade(1-6): ");
+            }
+
+        }
+    }
+
+    public static void openGpa(Scanner input, Map <String, Person> students){
+        int choice = 0;
+        while(true){
+            System.out.println("Please chose whose gpa you want to see: ");
+            System.out.println("1. Only of one student.");
+            System.out.println("2. Of the whole school. ");
+            System.out.println("Please enter only the number of your choice");
+            if(input.hasNextInt()){
+                choice = input.nextInt();
+                if(choice < 1 || choice > 2){
+                    System.out.println("Please enter a valid choice!");
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                System.out.println("Please enter the number of the your choice!");
+            }
+        }
+        switch(choice){
+            case 1:
+                String name = "";
+                while(true){
+                    System.out.println("Enter a student's name you want to check:");
+                    name  = input.nextLine();
+                    if(students.containsKey(name)){
+                        break;
+                    }
+                    else{
+                        System.out.println("Please enter a valid student's name.");
+                    }
+                }
+                Student currentStudent = (Student) getUser(name, students);
+                if(currentStudent != null){
+                    currentStudent.calculateGpa();
+                }
+                else{
+                    System.out.println("Error. Person not found. Please try again later.");
+                }
+                break;
+            case 2:
+                for (Map.Entry<String, Person> i : students.entrySet()){
+                    Student stud = (Student) getUser(i.getKey(), students);
+                    if(stud != null){
+                        System.out.printf("%s - %.2f", i.getKey(), stud.calculateGpa());
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void changePassword(Scanner input, Person person){
+        System.out.println("Enter a new password: ");
+        String newPass = input.next();
+        input.nextLine();
+        person.changePassword(newPass);
+        System.out.println("Password changed successfully!");
     }
 }
 

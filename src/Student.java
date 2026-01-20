@@ -2,19 +2,92 @@ import java.util.*;
 
 public class Student extends Person{
     private String[] subjects;
-    private List<Double> grades = new ArrayList<Double>();
+
+    private List<List<Double>> allGrades = new ArrayList<>();
     public Student(String name, String password, String[] subjects){
         super(name, password);
-        this.subjects = new String[] {Arrays.toString(subjects)};
+        this.subjects = subjects;
+        for(int i = 0; i < subjects.length; i++){
+            allGrades.add(new ArrayList());
+        }
     }
 
-    public String getName(){
-        return this.name;
+
+    public void addGrade(double grade, String subject){
+        int n = Integer.MIN_VALUE;
+        for (int i = 0; i < subjects.length; i++){
+            if(subjects[i].equals(subject)){
+                n = i;
+            }
+        }
+        if (n == Integer.MIN_VALUE){
+            System.out.println("Subject not found!");
+        }
+        else{
+            allGrades.get(n).add(grade);
+            System.out.printf("Grade added successfully to student %s!", this.name);
+        }
     }
-    public void addGrade(double grade){
-        this.grades.add(grade);
+
+    public void removeGrade(double grade, String subject){
+        int n = Integer.MIN_VALUE;
+        for (int i = 0; i < subjects.length; i++){
+            if(subjects[i].equals(subject)){
+                n = i;
+            }
+        }
+        if (n == Integer.MIN_VALUE){
+            System.out.println("Subject not found!");
+        }
+        else{
+            for (int i = 0; i < allGrades.get(n).size(); i++){
+                if(allGrades.get(n).get(i) == grade){
+                    allGrades.get(n).remove(i);
+                    System.out.println("Grade removed successfully! ");
+                    break;
+                }
+            }
+        }
+
     }
-    public List<Double> getGrades(){
-        return this.grades;
+    public List<List<Double>> getGrades(){
+        return this.allGrades;
+    }
+
+    public boolean hasSubject(String subject){
+        for (int i = 0; i < subjects.length; i++){
+            if(subjects[i].equals(subject)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasGrade(String subject, double grade){
+        int n = Integer.MIN_VALUE;
+        for (int i = 0; i < subjects.length; i++){
+            if(subjects[i].equals(subject)){
+                n = i;
+            }
+        }
+        if(n == Integer.MIN_VALUE){
+            return false;
+        }
+        for (int i = 0; i < allGrades.get(n).size(); i++){
+            if(allGrades.get(n).get(i) == grade){
+             return true;
+            }
+        }
+        return false;
+    }
+
+    public double calculateGpa(){
+        double sum = 0.0;
+        for (int i = 0; i < allGrades.size(); i++){
+            for (int j = 0; j < allGrades.get(i).size(); j++){
+                sum += allGrades.get(i).get(j);
+            }
+        }
+        return sum;
     }
 }

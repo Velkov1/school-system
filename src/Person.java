@@ -29,4 +29,8 @@ public class Person {
         this.name = newName;
     }
 
+    public void changePassword(String password){
+        this.password = password;
+    }
+
 }
