@@ -11,7 +11,7 @@ public class Person {
         return password;
     }
     public boolean getPassword(String password){
-        if(this.password == password){
+        if(this.password.equals(password)){
             return true;
         }
         else{

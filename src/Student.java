@@ -8,11 +8,26 @@ public class Student extends Person{
         super(name, password);
         this.subjects = subjects;
         for(int i = 0; i < subjects.length; i++){
-            allGrades.add(new ArrayList());
+            allGrades.add(new ArrayList<>());
         }
     }
 
 
+    public void getGrades(){
+        for(int i = 0; i < allGrades.size(); i++){
+            System.out.printf("%s: ", subjects[i]);
+            for(int j = 0; j < allGrades.get(i).size(); j++){
+                System.out.print(allGrades.get(i).get(j) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void getSubjects(){
+        for(int i = 0; i < subjects.length; i++){
+            System.out.print(subjects[i] + " ");
+        }
+    }
     public void addGrade(double grade, String subject){
         int n = Integer.MIN_VALUE;
         for (int i = 0; i < subjects.length; i++){
@@ -50,9 +65,7 @@ public class Student extends Person{
         }
 
     }
-    public List<List<Double>> getGrades(){
-        return this.allGrades;
-    }
+
 
     public boolean hasSubject(String subject){
         for (int i = 0; i < subjects.length; i++){
@@ -88,6 +101,7 @@ public class Student extends Person{
                 sum += allGrades.get(i).get(j);
             }
         }
+        sum = sum / allGrades.size();
         return sum;
     }
 }

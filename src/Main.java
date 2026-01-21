@@ -2,6 +2,7 @@ import java.util.*;
 import java.util.Scanner;
 
 
+
 class Main{
 
     public static String getRole(Scanner input, String[] roles){
@@ -149,7 +150,7 @@ class Main{
                 break;
             case "student":
                 Student student = (Student) person;
-                studentActions(input, student);
+                studentActions(input, student, students);
                 break;
             case "principal":
                 Principal prin = (Principal) person;
@@ -195,7 +196,7 @@ class Main{
                 break;
             case 4:
                 changePassword(input, teacher);
-
+                break;
             default:
                 break;
 
@@ -203,8 +204,48 @@ class Main{
 
     }
 
-    public static void studentActions(Scanner input, Student student){
+    public static void studentActions(Scanner input, Student student, Map <String, Person> students){
+        int action = 0;
+        while(input.hasNextLine()){
+            System.out.println("What do you want to do today?\nEnter a number from: ");
+            System.out.println("1. See my grades.");
+            System.out.println("2.See my subjects.");
+            System.out.println("3. See your place in the leaderboard.");
+            System.out.println("4. Change password.");
+            if(input.hasNextInt()){
+                action = input.nextInt();
+                if(action < 1 || action > 4){
+                    System.out.println("Please enter a valid action.");
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                System.out.println("Please enter the number of wanted action.");
+            }
+        }
 
+        switch(action){
+            case 1:
+                System.out.println("Your grades are:");
+                student.getGrades();
+                break;
+            case 2:
+                System.out.println("Your subjects are: ");
+                student.getSubjects();
+                break;
+            case 3:
+                System.out.print("Your place in the school based on the gpa is: ");
+                findPlace(student, students);
+                break;
+            case 4:
+                changePassword(input, student);
+                break;
+            default:
+                break;
+
+        }
     }
 
     public static void principalActions(Scanner input, Principal principal){
@@ -388,6 +429,30 @@ class Main{
         input.nextLine();
         person.changePassword(newPass);
         System.out.println("Password changed successfully!");
+    }
+
+    public static void findPlace(Student student, Map <String, Person> students){
+        double currStudentGpa = student.calculateGpa();
+        List<Double> allGPAs = new ArrayList<>();
+        int place = 0;
+        for(Map.Entry<String, Person> i : students.entrySet()){
+            Student current = (Student) getUser(i.getKey(),students);
+            if(current != null){
+                allGPAs.add(current.calculateGpa());
+            }
+        }
+        allGPAs.sort(Collections.reverseOrder());
+        for (int i = 0; i < allGPAs.size(); i++){
+            if(currStudentGpa >= allGPAs.get(i)){
+                place = i+1;
+            }
+        }
+        if(place > 0){
+            System.out.println(place);
+        }
+        else{
+            System.out.println("Error occured. Couldn't calculate the place. ");
+        }
     }
 }
 
