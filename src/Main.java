@@ -84,8 +84,7 @@ class Main{
 
     public static Person getUser(String username, Map<String, Person> map){
         if(map.containsKey(username)){
-            Person person = map.get(username);
-            return person;
+            return map.get(username);
         }
         return null;
     }
@@ -154,7 +153,7 @@ class Main{
                 break;
             case "principal":
                 Principal prin = (Principal) person;
-                principalActions(input, prin);
+                principalActions(input, prin, teachers, students, subjects);
                 break;
             default:
                 System.out.println("There is an error. Try again later.");
@@ -248,7 +247,61 @@ class Main{
         }
     }
 
-    public static void principalActions(Scanner input, Principal principal){
+    public static void principalActions(Scanner input, Principal principal, Map <String, Person> teachers, Map<String, Person> students, String[] subjects){
+        int action = 0;
+        while(input.hasNextLine()){
+            System.out.println("What do you want to do today?\nEnter a number from: ");
+            System.out.println("1. Add new teacher");
+            System.out.println("2. Remove a teacher");
+            System.out.println("3. Add new student");
+            System.out.println("4. Remove a student");
+            System.out.println("5. See the details of a teacher");
+            System.out.println("6. See the details of a student");
+            System.out.println("7. See gpa of the school/one student");
+            System.out.println("8. Change password");
+            if(input.hasNextInt()){
+                action = input.nextInt();
+                if(action < 1 || action > 8){
+                    System.out.println("Please enter a number from the choices. ");
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                System.out.println("Please enter a number to choose. ");
+            }
+        }
+        switch(action){
+            case 1:
+                Teacher created = addTeacher(input, subjects);
+                teachers.put(created.getName(), created);
+                break;
+            case 2:
+                removePerson(input, teachers);
+                break;
+            case 3:
+                Student createdStudent = addStudent(input, subjects);
+                students.put(createdStudent.getName(), createdStudent);
+                break;
+            case 4:
+                removePerson(input, students);
+                break;
+            case 5:
+                getTeacherInfo(input, teachers);
+                break;
+            case 6:
+                getStudentInfo(input, students);
+                break;
+            case 7:
+                openGpa(input, students);
+                break;
+            case 8:
+                changePassword(input, principal);
+                break;
+            default:
+                break;
+        }
 
     }
 
@@ -451,8 +504,175 @@ class Main{
             System.out.println(place);
         }
         else{
-            System.out.println("Error occured. Couldn't calculate the place. ");
+            System.out.println("Error occurred. Couldn't calculate the place. ");
         }
     }
+    public static Teacher addTeacher (Scanner input, String[] subjects){
+        String name = "";
+        String password = "";
+        String subject = "";
+        while(true){
+            if(input.hasNextLine()){
+                System.out.println("Please enter the name of the teacher you want to add");
+                name = input.next();
+                input.nextLine();
+                break;
+            }
+        }
+        while(true){
+            System.out.println("Enter the password of this teacher: ");
+            password = input.next();
+            input.nextLine();
+            break;
+        }
+        boolean valid = false;
+        while(true){
+            System.out.println("Enter the subject the teacher will teach");
+            subject = input.next();
+            input.nextLine();
+            for (String s : subjects){
+                if(subject.equals(s)){
+                    valid = true;
+                    break;
+                }
+            }
+            if(valid){
+                break;
+            }
+            else{
+                System.out.println("Please enter a valid subject");
+            }
+        }
+        Teacher teacher = new Teacher(name, password, subject);
+        System.out.println("New teacher added successfully!");
+        return teacher;
+    }
+    public static void removePerson(Scanner input, Map <String, Person> people){
+        String name = "";
+        while(true){
+            if(input.hasNextLine()){
+                System.out.println("Please enter the name of the person you want to remove: ");
+                name = input.next();
+                input.nextLine();
+                Person current = getUser(name, people);
+                if(current == null){
+                    System.out.println("There is no such person yet. ");
+                }
+                else{
+                    people.remove(name);
+                    break;
+                }
+            }
+        }
+        System.out.println("Removed successfully!");
+    }
+
+    public static Student addStudent(Scanner input, String[] subjects){
+        String name = "";
+        String password = "";
+        List <String> subject = new ArrayList<>();
+        String s = "";
+        while(true){
+            if(input.hasNextLine()){
+                System.out.println("Please enter the name of the student you want to add");
+                name = input.next();
+                input.nextLine();
+                break;
+            }
+        }
+        while(true){
+
+            System.out.println("Enter the password of this student: ");
+            password = input.next();
+            input.nextLine();
+            break;
+        }
+
+        while(true){
+            boolean valid = false;
+            System.out.println("Enter the subjects the student will learn (one per click)");
+            s = input.next();
+            input.nextLine();
+            for (String sub : subjects){
+                if(s.equals(sub)){
+                    valid = true;
+                    break;
+                }
+            }
+            if(valid){
+                subject.add(s);
+                System.out.println("Do you want to add more ( Y/N ): ");
+
+                if(input.next().equals("N") || input.next().equals("n")){
+                    input.nextLine();
+                    break;
+                }
+
+            }
+            else{
+                System.out.println("Please enter a valid subject");
+            }
+        }
+
+        String [] allSubjects = listArray(subject);
+        Student student = new Student(name, password, allSubjects);
+        System.out.println("New student added successfully!");
+        return student;
+    }
+
+    public static String[] listArray(List <String> list){
+        String[] array = new String[list.size()];
+
+        for(int i = 0; i < list.size(); i++){
+            array[i] = list.get(i);
+        }
+        return array;
+    }
+    public static void getTeacherInfo(Scanner input, Map <String, Person> teachers){
+        String name = "";
+        while(true){
+            name = input.next();
+            input.nextLine();
+            Teacher current = (Teacher) getUser(name, teachers);
+            if(current != null){
+                teacherPrintInfo(current);
+            }
+            else{
+                System.out.println("Teacher not found. Try again.");
+            }
+        }
+    }
+
+    public static void teacherPrintInfo(Teacher teacher){
+        System.out.printf("The %s's information is: ", teacher.getName());
+        System.out.println("Name: " + teacher.getName());
+        System.out.println("Subject " + teacher.getSubject());
+    }
+    public static void getStudentInfo(Scanner input, Map <String, Person> students){
+        String name = "";
+        while(true){
+            name = input.next();
+            input.nextLine();
+            Student current = (Student) getUser(name, students);
+            if(current != null){
+                studentPrintInfo(current);
+            }
+            else{
+                System.out.println("Student not found. Try again.");
+            }
+        }
+    }
+
+    public static void studentPrintInfo(Student student){
+        System.out.printf("The %s's information is: ", student.getName());
+        System.out.println("Name: " + student.getName());
+        System.out.print("Subjects ");
+        student.getSubjects();
+        System.out.println();
+        System.out.print("Grades: ");
+        student.getGrades();
+        System.out.println();
+    }
+
 }
 

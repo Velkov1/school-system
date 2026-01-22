@@ -20,5 +20,7 @@ public class Teacher extends Person {
         System.out.printf("You are %s and you are a teacher!", name);
     }
 
-
+    public String getSubject (){
+        return this.subject;
+    }
 }

@@ -22,9 +22,6 @@ public class Person {
         return name;
     }
 
-    public void setPassword(String newPassword){
-        this.password = newPassword;
-    }
     public void setName(String newName){
         this.name = newName;
     }
