@@ -96,12 +96,14 @@ public class Student extends Person{
 
     public double calculateGpa(){
         double sum = 0.0;
+        int count = 0;
         for (int i = 0; i < allGrades.size(); i++){
             for (int j = 0; j < allGrades.get(i).size(); j++){
                 sum += allGrades.get(i).get(j);
+                count++;
             }
         }
-        sum = sum / allGrades.size();
+        sum = sum / count;
         return sum;
     }
 }

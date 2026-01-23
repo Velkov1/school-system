@@ -5,11 +5,110 @@ import java.util.Scanner;
 
 class Main{
 
+    public static void main(String[] args){
+
+        Scanner input = new Scanner(System.in);
+        String[] roles = new String[] {"principal", "teacher", "student"};
+        HashMap<String, Person> teachers = new HashMap<String, Person>();
+        HashMap<String, Person> students = new HashMap<String, Person>();
+        HashMap<String, Person> principal = new HashMap<String, Person>();
+        Principal head = new Principal("Mr. Adam Smith", "password123");
+        principal.put(head.getName(), head);
+
+        Teacher teacher1 = new Teacher ("Ivan Petrov", "pass1", "Maths");
+        teachers.put(teacher1.getName(), teacher1);
+        Teacher teacher2 = new Teacher ("Martin Bogdanov", "pass2", "History");
+        teachers.put(teacher2.getName(), teacher2);
+        Teacher teacher3 = new Teacher ("Petur Ivanov", "pass3", "English");
+        teachers.put(teacher3.getName(), teacher3);
+
+        Student student1 = new Student("Ivancho","p123", new String [] {"Maths", "Physics"});
+        students.put(student1.getName(), student1);
+        Student student2 = new Student("Martincho","m123", new String [] {"Literature", "German"});
+        students.put(student2.getName(), student2);
+        Student student3 = new Student("Peturcho","p123", new String [] {"Sports", "German"});
+        students.put(student3.getName(), student3);
+
+        String [] subjects = new String [] {"Maths", "English", "History", "Geography", "Literature", "Physics", "German", "Sports"};
+
+        while(true){
+            System.out.println("Hello, please log in the school system to continue.");
+
+            String role =getRole(input, roles);
+            String username = "";
+            String password = "";
+            Person person = null;
+            while(true){
+                if(role.equals("teacher")){
+                    if(teachers.isEmpty()){
+                        System.out.println("There are not teachers added yet. PLease log in as the principal to continue!");
+                        role =getRole(input, roles);
+                    }
+                    else{
+                        username = getUsername(input, teachers);
+                        password = checkPassword(input,username, teachers );
+                        person = getUser(username, password, teachers);
+                        break;
+                    }
+                }
+                else if(role.equals("student")){
+                    if(students.isEmpty()){
+                        System.out.println("There are not students added yet. PLease log in as the principal to continue!");
+                        role =getRole(input, roles);
+                    }
+                    else{
+                        username = getUsername(input, students);
+                        password = checkPassword(input,username, students );
+                        person = getUser(username, password, students);
+                        break;
+                    }
+                }
+                else if(role.equals("principal")){
+                    username = getUsername(input, principal);
+                    password = checkPassword(input,username, principal);
+                    person = getUser(username, password, principal);
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+
+            System.out.printf("Welcome again %s. How are you today?", username);
+            System.out.println();
+            switch(role){
+                case "teacher":
+                    Teacher teacher = (Teacher) person;
+                    teacherActions(input, teacher, students);
+                    break;
+                case "student":
+                    Student student = (Student) person;
+                    studentActions(input, student, students);
+                    break;
+                case "principal":
+                    Principal prin = (Principal) person;
+                    principalActions(input, prin, teachers, students, subjects);
+                    break;
+                default:
+                    System.out.println("There is an error. Try again later.");
+            }
+            System.out.println("Do you want to use another user? (Y / N)");
+            String choice = input.next();
+            input.nextLine();
+            if(choice.equals("n") ||choice.equals("N")){
+                System.out.println("Thank you for using the School System today! Have a nice day\nLogging out...");
+                break;
+            }
+        }
+
+    }
     public static String getRole(Scanner input, String[] roles){
+
         String role = "";
-        while(input.hasNextLine()){
+        while(true){
             System.out.println("Please enter your role in the school:");
-            role = input.nextLine();
+            role = input.next();
+            input.nextLine();
             if(isRole(role, roles)){
                 break;
             }
@@ -32,14 +131,15 @@ class Main{
 
     public static String getUsername(Scanner input, Map<String, Person> map){
         String username = "";
-        while(input.hasNextLine()){
+        while(true){
             System.out.println("Please enter your username: ");
             username = input.nextLine();
+
             if(map.containsKey(username)){
                 break;
             }
             else{
-                System.out.println("Please enter a valid username: ");
+                System.out.println("Please enter a valid username.");
             }
         }
         return username;
@@ -88,219 +188,175 @@ class Main{
         }
         return null;
     }
-    public static void main(String[] args){
-
-        Scanner input = new Scanner(System.in);
-        String[] roles = new String[] {"principal", "teacher", "student"};
-        HashMap<String, Person> teachers = new HashMap<String, Person>();
-        HashMap<String, Person> students = new HashMap<String, Person>();
-        HashMap<String, Person> principal = new HashMap<String, Person>();
-        Principal head = new Principal("Mr. Adam Smith", "password123");
-        principal.put(head.getName(), head);
-
-        String [] subjects = new String [] {"Maths", "English", "History", "Geography", "Literature", "Physics", "German", "Sports"};
-        System.out.println("Hello, please log in the school system to continue.");
-
-        String role =getRole(input, roles);
-        String username = "";
-        String password = "";
-        Person person = null;
-        while(true){
-            if(role.equals("teacher")){
-                if(teachers.isEmpty()){
-                    System.out.println("There are not teachers added yet. PLease log in as the principal to continue!");
-                    role =getRole(input, roles);
-                }
-                else{
-                    username = getUsername(input, teachers);
-                    password = checkPassword(input,username, teachers );
-                    person = getUser(username, password, teachers);
-                    break;
-                }
-            }
-            else if(role.equals("student")){
-                if(students.isEmpty()){
-                    System.out.println("There are not students added yet. PLease log in as the principal to continue!");
-                    role =getRole(input, roles);
-                }
-                else{
-                    username = getUsername(input, students);
-                    password = checkPassword(input,username, students );
-                    person = getUser(username, password, students);
-                    break;
-                }
-            }
-            else if(role.equals("principal")){
-                username = getUsername(input, principal);
-                password = checkPassword(input,username, principal);
-                person = getUser(username, password, principal);
-                break;
-            }
-            else{
-                break;
-            }
-        }
-
-        System.out.printf("Welcome again %s. How are you today?", username);
-        switch(role){
-            case "teacher":
-                Teacher teacher = (Teacher) person;
-                teacherActions(input, teacher, students);
-                break;
-            case "student":
-                Student student = (Student) person;
-                studentActions(input, student, students);
-                break;
-            case "principal":
-                Principal prin = (Principal) person;
-                principalActions(input, prin, teachers, students, subjects);
-                break;
-            default:
-                System.out.println("There is an error. Try again later.");
-        }
-    }
 
 
     public static void teacherActions(Scanner input, Teacher teacher, Map<String, Person> students){
-        int action = 0;
-        while(input.hasNextLine()){
-            System.out.println("What do you want to do today?\nEnter a number from: ");
-            System.out.println("1. Add grade.");
-            System.out.println("2.Remove grade.");
-            System.out.println("3. Open the gpa of the school.");
-            System.out.println("4. Change password.");
-            if(input.hasNextInt()){
-                action = input.nextInt();
-                if(action < 1 || action > 4){
-                    System.out.println("Please enter a valid action.");
+        while(true){
+            int action = 0;
+            while(true){
+                System.out.println("What do you want to do today?\nEnter a number from: ");
+                System.out.println("1. Add grade.");
+                System.out.println("2. Remove grade.");
+                System.out.println("3. Open the gpa of the school.");
+                System.out.println("4. Change password.");
+                System.out.println("5. Back.");
+                if(input.hasNextInt()){
+                    action = input.nextInt();
+                    input.nextLine();
+                    if(action < 1 || action > 5){
+                        System.out.println("Please enter a valid action.");
 
+                    }
+                    else{
+                        break;
+                    }
                 }
                 else{
-                    break;
+                    System.out.println("Please enter the number of the wanted action.");
+                    input.nextLine();
                 }
             }
-            else{
-                System.out.println("Please enter the number of wanted action.");
-            }
-        }
-        switch(action){
-            case 1:
-                addGradeToStudent(input, teacher, students);
-                break;
-            case 2:
-                removeGradeToStudent(input, teacher, students);
-                break;
-            case 3:
-                openGpa(input, students);
-                break;
-            case 4:
-                changePassword(input, teacher);
-                break;
-            default:
-                break;
 
+            if(action == 5){
+                System.out.println("Going back. One moment...");
+                break;
+            }
+            switch(action){
+                case 1:
+                    addGradeToStudent(input, teacher, students);
+                    break;
+                case 2:
+                    removeGradeToStudent(input, teacher, students);
+                    break;
+                case 3:
+                    openGpa(input, students);
+                    break;
+                case 4:
+                    changePassword(input, teacher);
+                    break;
+            }
+            System.out.println();
         }
+
 
     }
 
     public static void studentActions(Scanner input, Student student, Map <String, Person> students){
-        int action = 0;
-        while(input.hasNextLine()){
-            System.out.println("What do you want to do today?\nEnter a number from: ");
-            System.out.println("1. See my grades.");
-            System.out.println("2.See my subjects.");
-            System.out.println("3. See your place in the leaderboard.");
-            System.out.println("4. Change password.");
-            if(input.hasNextInt()){
-                action = input.nextInt();
-                if(action < 1 || action > 4){
-                    System.out.println("Please enter a valid action.");
+        while(true){
+            int action = 0;
+            while(true){
+                System.out.println("What do you want to do today?\nEnter a number from: ");
+                System.out.println("1. See my grades.");
+                System.out.println("2. See my subjects.");
+                System.out.println("3. See your place in the leaderboard.");
+                System.out.println("4. Change password.");
+                System.out.println("5. Back.");
+                if(input.hasNextInt()){
+                    action = input.nextInt();
+                    if(action < 1 || action > 5){
+                        System.out.println("Please enter a valid action.");
+                    }
+                    else{
+                        break;
+                    }
                 }
                 else{
-                    break;
+                    System.out.println("Please enter the number of wanted action.");
+                    input.nextLine();
                 }
             }
-            else{
-                System.out.println("Please enter the number of wanted action.");
+            if(action == 5){
+                System.out.println("Going back. One moment...");
+                break;
             }
+            switch(action){
+                case 1:
+                    System.out.println("Your grades are:");
+                    student.getGrades();
+                    break;
+                case 2:
+                    System.out.println("Your subjects are: ");
+                    student.getSubjects();
+                    break;
+                case 3:
+                    System.out.print("Your place in the school based on the gpa is: ");
+                    findPlace(student, students);
+                    break;
+                case 4:
+                    changePassword(input, student);
+                    break;
+                default:
+                    break;
+
+            }
+            System.out.println();
         }
 
-        switch(action){
-            case 1:
-                System.out.println("Your grades are:");
-                student.getGrades();
-                break;
-            case 2:
-                System.out.println("Your subjects are: ");
-                student.getSubjects();
-                break;
-            case 3:
-                System.out.print("Your place in the school based on the gpa is: ");
-                findPlace(student, students);
-                break;
-            case 4:
-                changePassword(input, student);
-                break;
-            default:
-                break;
 
-        }
     }
 
     public static void principalActions(Scanner input, Principal principal, Map <String, Person> teachers, Map<String, Person> students, String[] subjects){
-        int action = 0;
-        while(input.hasNextLine()){
-            System.out.println("What do you want to do today?\nEnter a number from: ");
-            System.out.println("1. Add new teacher");
-            System.out.println("2. Remove a teacher");
-            System.out.println("3. Add new student");
-            System.out.println("4. Remove a student");
-            System.out.println("5. See the details of a teacher");
-            System.out.println("6. See the details of a student");
-            System.out.println("7. See gpa of the school/one student");
-            System.out.println("8. Change password");
-            if(input.hasNextInt()){
-                action = input.nextInt();
-                if(action < 1 || action > 8){
-                    System.out.println("Please enter a number from the choices. ");
+        while(true){
+            int action = 0;
+            while(true){
+                System.out.println("What do you want to do today?\nEnter a number from: ");
+                System.out.println("1. Add new teacher");
+                System.out.println("2. Remove a teacher");
+                System.out.println("3. Add new student");
+                System.out.println("4. Remove a student");
+                System.out.println("5. See the details of a teacher");
+                System.out.println("6. See the details of a student");
+                System.out.println("7. See gpa of the school/one student");
+                System.out.println("8. Change password");
+                System.out.println("9. Back");
+                if(input.hasNextInt()){
+                    action = input.nextInt();
+                    input.nextLine();
+                    if(action < 1 || action > 9){
+                        System.out.println("Please enter a number from the choices. ");
+                    }
+                    else{
+                        break;
+                    }
                 }
                 else{
-                    break;
+                    System.out.println("Please enter a number to choose. ");
+                    input.nextLine();
                 }
             }
-            else{
-                System.out.println("Please enter a number to choose. ");
+            if(action == 9){
+                System.out.println("Going back. One moment...");
+                break;
             }
-        }
-        switch(action){
-            case 1:
-                Teacher created = addTeacher(input, subjects);
-                teachers.put(created.getName(), created);
-                break;
-            case 2:
-                removePerson(input, teachers);
-                break;
-            case 3:
-                Student createdStudent = addStudent(input, subjects);
-                students.put(createdStudent.getName(), createdStudent);
-                break;
-            case 4:
-                removePerson(input, students);
-                break;
-            case 5:
-                getTeacherInfo(input, teachers);
-                break;
-            case 6:
-                getStudentInfo(input, students);
-                break;
-            case 7:
-                openGpa(input, students);
-                break;
-            case 8:
-                changePassword(input, principal);
-                break;
-            default:
-                break;
+            switch(action){
+                case 1:
+                    Teacher created = addTeacher(input, subjects);
+                    teachers.put(created.getName(), created);
+                    break;
+                case 2:
+                    removePerson(input, teachers);
+                    break;
+                case 3:
+                    Student createdStudent = addStudent(input, subjects);
+                    students.put(createdStudent.getName(), createdStudent);
+                    break;
+                case 4:
+                    removePerson(input, students);
+                    break;
+                case 5:
+                    getTeacherInfo(input, teachers);
+                    break;
+                case 6:
+                    getStudentInfo(input, students);
+                    break;
+                case 7:
+                    openGpa(input, students);
+                    break;
+                case 8:
+                    changePassword(input, principal);
+                    break;
+            }
+            System.out.println();
         }
 
     }
@@ -310,8 +366,9 @@ class Main{
     public static void addGradeToStudent(Scanner input, Teacher teacher, Map<String, Person> students){
         String name = "";
         while(true){
-            name  = input.nextLine();
+
             System.out.println("Enter a student's name:");
+            name  = input.nextLine();
             if(students.containsKey(name)){
                 break;
             }
@@ -424,6 +481,7 @@ class Main{
 
     public static void openGpa(Scanner input, Map <String, Person> students){
         int choice = 0;
+        double gpa = 0.0;
         while(true){
             System.out.println("Please chose whose gpa you want to see: ");
             System.out.println("1. Only of one student.");
@@ -431,6 +489,7 @@ class Main{
             System.out.println("Please enter only the number of your choice");
             if(input.hasNextInt()){
                 choice = input.nextInt();
+                input.nextLine();
                 if(choice < 1 || choice > 2){
                     System.out.println("Please enter a valid choice!");
                 }
@@ -457,7 +516,9 @@ class Main{
                 }
                 Student currentStudent = (Student) getUser(name, students);
                 if(currentStudent != null){
-                    currentStudent.calculateGpa();
+                    gpa = currentStudent.calculateGpa();
+                    System.out.printf("The GPA of %s is %f", name, gpa);
+                    System.out.println();
                 }
                 else{
                     System.out.println("Error. Person not found. Please try again later.");
@@ -468,11 +529,11 @@ class Main{
                     Student stud = (Student) getUser(i.getKey(), students);
                     if(stud != null){
                         System.out.printf("%s - %.2f", i.getKey(), stud.calculateGpa());
+                        System.out.println();
                     }
                 }
                 break;
-            default:
-                break;
+
         }
     }
 
@@ -487,7 +548,7 @@ class Main{
     public static void findPlace(Student student, Map <String, Person> students){
         double currStudentGpa = student.calculateGpa();
         List<Double> allGPAs = new ArrayList<>();
-        int place = 0;
+        int place = 1;
         for(Map.Entry<String, Person> i : students.entrySet()){
             Student current = (Student) getUser(i.getKey(),students);
             if(current != null){
@@ -496,8 +557,8 @@ class Main{
         }
         allGPAs.sort(Collections.reverseOrder());
         for (int i = 0; i < allGPAs.size(); i++){
-            if(currStudentGpa >= allGPAs.get(i)){
-                place = i+1;
+            if(currStudentGpa < allGPAs.get(i)){
+                place++;
             }
         }
         if(place > 0){
@@ -511,20 +572,14 @@ class Main{
         String name = "";
         String password = "";
         String subject = "";
-        while(true){
-            if(input.hasNextLine()){
-                System.out.println("Please enter the name of the teacher you want to add");
-                name = input.next();
-                input.nextLine();
-                break;
-            }
-        }
-        while(true){
-            System.out.println("Enter the password of this teacher: ");
-            password = input.next();
-            input.nextLine();
-            break;
-        }
+
+        System.out.println("Please enter the name of the teacher you want to add");
+        name = input.nextLine();
+
+        System.out.println("Enter the password of this teacher: ");
+        password = input.next();
+        input.nextLine();
+
         boolean valid = false;
         while(true){
             System.out.println("Enter the subject the teacher will teach");
@@ -552,11 +607,12 @@ class Main{
         while(true){
             if(input.hasNextLine()){
                 System.out.println("Please enter the name of the person you want to remove: ");
-                name = input.next();
-                input.nextLine();
+                name = input.nextLine();
+
                 Person current = getUser(name, people);
                 if(current == null){
                     System.out.println("There is no such person yet. ");
+                    input.nextLine();
                 }
                 else{
                     people.remove(name);
@@ -572,21 +628,14 @@ class Main{
         String password = "";
         List <String> subject = new ArrayList<>();
         String s = "";
-        while(true){
-            if(input.hasNextLine()){
-                System.out.println("Please enter the name of the student you want to add");
-                name = input.next();
-                input.nextLine();
-                break;
-            }
-        }
-        while(true){
 
-            System.out.println("Enter the password of this student: ");
-            password = input.next();
-            input.nextLine();
-            break;
-        }
+        System.out.println("Please enter the name of the student you want to add");
+        name = input.nextLine();
+
+        System.out.println("Enter the password of this student: ");
+        password = input.nextLine();
+
+
 
         while(true){
             boolean valid = false;
@@ -602,9 +651,10 @@ class Main{
             if(valid){
                 subject.add(s);
                 System.out.println("Do you want to add more ( Y/N ): ");
+                String choose = input.next();
+                input.nextLine();
+                if(choose.equals("N") || choose.equals("n")){
 
-                if(input.next().equals("N") || input.next().equals("n")){
-                    input.nextLine();
                     break;
                 }
 
@@ -631,11 +681,13 @@ class Main{
     public static void getTeacherInfo(Scanner input, Map <String, Person> teachers){
         String name = "";
         while(true){
-            name = input.next();
-            input.nextLine();
+            System.out.println("Enter teacher name: ");
+            name = input.nextLine();
+            //input.nextLine();
             Teacher current = (Teacher) getUser(name, teachers);
             if(current != null){
                 teacherPrintInfo(current);
+                break;
             }
             else{
                 System.out.println("Teacher not found. Try again.");
@@ -651,11 +703,13 @@ class Main{
     public static void getStudentInfo(Scanner input, Map <String, Person> students){
         String name = "";
         while(true){
-            name = input.next();
-            input.nextLine();
+
+            System.out.println("Enter the name of the student: ");
+            name = input.nextLine();
             Student current = (Student) getUser(name, students);
             if(current != null){
                 studentPrintInfo(current);
+                break;
             }
             else{
                 System.out.println("Student not found. Try again.");
