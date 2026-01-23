@@ -7,23 +7,11 @@ public class Person {
         this.password = password;
     }
 
-    public String showPassword(){
-        return password;
-    }
     public boolean getPassword(String password){
-        if(this.password.equals(password)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.password.equals(password);
     }
     public String getName(){
         return name;
-    }
-
-    public void setName(String newName){
-        this.name = newName;
     }
 
     public void changePassword(String password){

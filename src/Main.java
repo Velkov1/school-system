@@ -9,9 +9,9 @@ class Main{
 
         Scanner input = new Scanner(System.in);
         String[] roles = new String[] {"principal", "teacher", "student"};
-        HashMap<String, Person> teachers = new HashMap<String, Person>();
-        HashMap<String, Person> students = new HashMap<String, Person>();
-        HashMap<String, Person> principal = new HashMap<String, Person>();
+        HashMap<String, Person> teachers = new HashMap<>();
+        HashMap<String, Person> students = new HashMap<>();
+        HashMap<String, Person> principal = new HashMap<>();
 
         //example users
         Principal head = new Principal("Mr. Adam Smith", "password123");
@@ -165,12 +165,7 @@ class Main{
 
     public static boolean isValidPass(String pass, String username, Map<String, Person> map){
         Person person = map.get(username);
-        if(person.getPassword(pass)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return person.getPassword(pass);
     }
 
     public static Person getUser(String username, String password, Map<String, Person> map){
@@ -558,8 +553,8 @@ class Main{
             }
         }
         allGPAs.sort(Collections.reverseOrder());
-        for (int i = 0; i < allGPAs.size(); i++){
-            if(currStudentGpa < allGPAs.get(i)){
+        for (Double allGPA : allGPAs) {
+            if (currStudentGpa < allGPA) {
                 place++;
             }
         }

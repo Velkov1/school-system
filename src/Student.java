@@ -24,8 +24,8 @@ public class Student extends Person{
     }
 
     public void getSubjects(){
-        for(int i = 0; i < subjects.length; i++){
-            System.out.print(subjects[i] + " ");
+        for (String subject : subjects) {
+            System.out.print(subject + " ");
         }
     }
     public void addGrade(double grade, String subject){
@@ -97,9 +97,9 @@ public class Student extends Person{
     public double calculateGpa(){
         double sum = 0.0;
         int count = 0;
-        for (int i = 0; i < allGrades.size(); i++){
-            for (int j = 0; j < allGrades.get(i).size(); j++){
-                sum += allGrades.get(i).get(j);
+        for (List<Double> allGrade : allGrades) {
+            for (int j = 0; j < allGrade.size(); j++) {
+                sum += allGrade.get(j);
                 count++;
             }
         }
