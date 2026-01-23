@@ -12,6 +12,8 @@ class Main{
         HashMap<String, Person> teachers = new HashMap<String, Person>();
         HashMap<String, Person> students = new HashMap<String, Person>();
         HashMap<String, Person> principal = new HashMap<String, Person>();
+
+        //example users
         Principal head = new Principal("Mr. Adam Smith", "password123");
         principal.put(head.getName(), head);
 
@@ -19,14 +21,14 @@ class Main{
         teachers.put(teacher1.getName(), teacher1);
         Teacher teacher2 = new Teacher ("Martin Bogdanov", "pass2", "History");
         teachers.put(teacher2.getName(), teacher2);
-        Teacher teacher3 = new Teacher ("Petur Ivanov", "pass3", "English");
+        Teacher teacher3 = new Teacher ("Petar Ivanov", "pass3", "English");
         teachers.put(teacher3.getName(), teacher3);
 
-        Student student1 = new Student("Ivancho","p123", new String [] {"Maths", "Physics"});
+        Student student1 = new Student("Ivan","p123", new String [] {"Maths", "Physics"});
         students.put(student1.getName(), student1);
-        Student student2 = new Student("Martincho","m123", new String [] {"Literature", "German"});
+        Student student2 = new Student("Martin","m123", new String [] {"Literature", "German"});
         students.put(student2.getName(), student2);
-        Student student3 = new Student("Peturcho","p123", new String [] {"Sports", "German"});
+        Student student3 = new Student("Petar","p123", new String [] {"Sports", "German"});
         students.put(student3.getName(), student3);
 
         String [] subjects = new String [] {"Maths", "English", "History", "Geography", "Literature", "Physics", "German", "Sports"};
